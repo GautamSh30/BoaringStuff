@@ -122,3 +122,33 @@ To create your own Docker image, use a Dockerfile:
 docker build -t my-image-name .
 docker run my-image-name
 ```
+
+## Building a Dockerfile
+```bash
+FROM alpine
+RUN apk add --update redis
+CMD ["redis-server"]
+
+# then run this command
+docker build .
+
+# When we change command, new dockerfile will run from below that changed line only
+RUN apk add --update gcc
+```
+
+## Tagging an Image
+```bash
+docker build -t sharmaaggautam/redis:latest .
+```
+
+## Installing Dependencies
+```bash
+COPY ./ ./ 
+# Copy everything from the current directory on the host to the current working directory inside the Docker image.
+RUN npm install
+```
+
+## Port Mapping
+```bash
+docker run -p localPort:dockerPort imageName
+```
