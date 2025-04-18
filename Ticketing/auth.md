@@ -99,3 +99,11 @@ Always set cookies with:
 | Avoid | Storing tokens in LocalStorage |
 | Protect | CSRF via SameSite or CSRF tokens |
 
+## 🔐 Creating a Secret in Kubernetes
+
+To create a secret named `jwt-secret` with a key `jwt` and value `asdf`, use the following command:
+
+```bash
+kubectl create secret generic jwt-secret --from-literal=jwt=asdf
+# and some code in .yaml files in depl u want to use this variable
+```

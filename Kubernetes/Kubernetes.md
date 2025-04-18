@@ -167,3 +167,12 @@ Tells Kubernetes to reach out to its provider and provision a load balancer. Get
 
 ### Ingress Controller
 A pod with a set of routing rules to distribute traffic to other services
+
+## 🔐 Creating a Secret in Kubernetes
+
+To create a secret named `jwt-secret` with a key `jwt` and value `asdf`, use the following command:
+
+```bash
+kubectl create secret generic jwt-secret --from-literal=jwt=asdf
+# and some code in .yaml files in depl u want to use this variable
+```
