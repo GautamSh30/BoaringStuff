@@ -176,3 +176,103 @@ To create a secret named `jwt-secret` with a key `jwt` and value `asdf`, use the
 kubectl create secret generic jwt-secret --from-literal=jwt=asdf
 # and some code in .yaml files in depl u want to use this variable
 ```
+
+
+## 📛 Namespace
+
+### ✅ What is a Namespace?
+
+Namespaces in Kubernetes allow you to divide cluster resources between multiple users (via resource quota). They're commonly used in environments with many teams or projects sharing a single cluster.
+
+### 🧠 Key Points:
+* Namespaces help **logically isolate resources**.
+* Namespaced resources include pods, services, deployments, etc.
+* Some resources are **not namespaced**, like Nodes and PersistentVolumes.
+* Default namespaces:
+   * `default`: Default for objects with no other namespace
+   * `kube-system`: Kubernetes system components
+   * `kube-public`: Publicly readable resources
+   * `kube-node-lease`: Used for node heartbeat leases
+
+### 📄 Create a Namespace
+
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev-team
+```
+
+```bash
+kubectl apply -f dev-namespace.yaml
+```
+
+### 🧪 Use Namespace in Resources
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod
+  namespace: dev-team
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+```
+
+Or set namespace in the context:
+
+```bash
+kubectl config set-context --current --namespace=dev-team
+```
+
+## 🛰️ NameService (Service Discovery)
+
+### ✅ What is NameService?
+
+Kubernetes provides built-in service discovery. A Service gets a stable DNS name and IP address, allowing communication between pods.
+
+### 🧠 Key Points:
+* Kubernetes uses DNS-based service discovery.
+* Services in the same namespace can resolve each other by name: `my-service`
+* From different namespace: `my-service.my-namespace.svc.cluster.local`
+* Backed by kube-dns or CoreDNS.
+
+### 📄 Example: Define a Service
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-backend
+  namespace: dev-team
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+```
+
+### 🔍 Resolving DNS
+
+From a pod in the same namespace:
+
+```bash
+curl http://my-backend
+```
+
+From a pod in another namespace:
+
+```bash
+curl http://my-backend.dev-team.svc.cluster.local
+```
+
+## 🧠 Summary
+
+| Concept | Purpose | Scope |
+|---------|---------|-------|
+| Namespace | Logical grouping/isolation of resources | Cluster-wide |
+| NameService | Service discovery (DNS) for communication | Within/Across namespaces |
